@@ -9,28 +9,32 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLargeScreen = MediaQuery.of(context).size.width > 600;
+
     return GridView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(), // Prevent nested scroll issues
+      shrinkWrap: true, // Allow grid to fit dynamically
+      padding: EdgeInsets.zero, // Ensure no padding around the grid
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.8,
-        mainAxisSpacing: 10.h,
-        crossAxisSpacing: 10.w,
+        crossAxisCount: isLargeScreen ? 3 : 2,
+        childAspectRatio: 0.8, // Compact card layout
+        mainAxisSpacing: 8.h, // Minimal vertical spacing between rows
+        crossAxisSpacing: 8.w, // Minimal horizontal spacing between columns
       ),
       itemCount: products.length,
       itemBuilder: (context, index) {
         final product = products[index];
         return Card(
-          elevation: 4,
+          elevation: 3, // Subtle shadow for a clean look
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(12.r),
           ),
+          margin: EdgeInsets.zero, // No margin around the card
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(10.r)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
                 child: Image.network(
                   product.imageUrl,
                   height: 120.h,
@@ -41,16 +45,27 @@ class ProductCard extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min, // Compact spacing
                   children: [
                     Text(
                       product.name,
-                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.8),
+                      ),
                       textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 5.h),
+                    SizedBox(height: 4.h),
                     Text(
                       '\$${product.price.toStringAsFixed(2)}',
-                      style: TextStyle(fontSize: 14.sp, color: Colors.green),
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        color: Colors.green,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),

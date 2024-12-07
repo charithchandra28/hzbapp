@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hzbapp/utils/theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'blocs/guest/guest_bloc.dart';
@@ -16,8 +17,8 @@ void main() async {
   );
 
   // Initialize the database
-  // final databaseInitializer = DatabaseInitializer();
-  // await databaseInitializer.initializeDatabase();
+  final databaseInitializer = DatabaseInitializer();
+  await databaseInitializer.initializeDatabase();
 
   runApp(MyApp());
 }
@@ -29,8 +30,11 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812), // Design size based on your Figma/Sketch design
       builder: (context, child) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Local Delivery App',
-          theme: ThemeData(primarySwatch: Colors.blue),
+          theme: appTheme,
+          darkTheme: darkTheme, // Dark theme
+          themeMode: ThemeMode.system, // Automatically adapts to system setting
           home: BlocProvider(
             create: (context) => GuestBloc(GuestRepository())..add(LoadGuestData()),
             child: HomeScreen(),

@@ -7,30 +7,34 @@ import '../widgets/category_card.dart';
 import '../widgets/banner_carousel.dart';
 import '../widgets/product_card.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
+import '../widgets/skeleton_loader.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset(
-          'assets/logo.jpg', // Replace with your app logo path
-          height: 40.h,
+        title: Row(
+          children: [
+            Text(
+              "Hello, User!",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            Spacer(),
+            IconButton(
+              icon: Icon(Icons.account_circle),
+              onPressed: () {
+                // Sign Up / Log In
+              },
+              tooltip: "Toggle Dark Mode",
+            ),
+          ],
         ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.account_circle, size: 30.sp),
-            onPressed: () {
-              // Navigate to login/signup screen
-            },
-          ),
-        ],
       ),
       body: BlocBuilder<GuestBloc, GuestState>(
         builder: (context, state) {
           if (state is GuestLoading) {
-            return Center(child: CircularProgressIndicator());
+            return SkeletonLoader(); // Displays skeleton loader while loading
           } else if (state is GuestLoaded) {
             return SingleChildScrollView(
               child: Padding(
@@ -52,43 +56,51 @@ class HomeScreen extends StatelessWidget {
 
                     // Promotional Banner
                     BannerCarousel(promotions: state.promotions),
-
                     SizedBox(height: 20.h),
 
                     // Categories Section
                     Text(
                       "Categories",
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     SizedBox(height: 10.h),
                     CategoryCard(categories: state.categories),
 
+                    // Popular Items Section
                     SizedBox(height: 20.h),
-
-                    // Popular Items/Vendors
                     Text(
                       "Popular Items",
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 8.h),
                     ProductCard(products: state.products),
                   ],
                 ),
               ),
             );
           } else if (state is GuestError) {
-            return Center(child: Text('Error: ${state.message}'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, size: 50, color: Colors.red),
+                  SizedBox(height: 10),
+                  Text("Something went wrong!", style: TextStyle(fontSize: 18)),
+                ],
+              ),
+            );
           }
           return Container();
         },
       ),
       bottomNavigationBar: CustomBottomNavBar(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to Cart
+        },
+        child: Icon(Icons.shopping_cart),
+        tooltip: "Go to Cart",
+      ),
     );
   }
 }

@@ -14,9 +14,10 @@ class CategoryCard extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
+        separatorBuilder: (context, index) => SizedBox(width: 10.w),
         itemBuilder: (context, index) {
           final category = categories[index];
-          return Column(
+          return Column(// TODO Implement this library.
             children: [
               CircleAvatar(
                 radius: 40.r,
@@ -30,7 +31,6 @@ class CategoryCard extends StatelessWidget {
             ],
           );
         },
-        separatorBuilder: (context, index) => SizedBox(width: 10.w),
       ),
     );
   }
