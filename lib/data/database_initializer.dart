@@ -14,11 +14,17 @@ class DatabaseInitializer {
       ''',
       '''
       CREATE TABLE IF NOT EXISTS products (
-          id SERIAL PRIMARY KEY,
-          name TEXT NOT NULL,
-          price DECIMAL(10, 2) NOT NULL,
-          image_url TEXT NOT NULL,
-          category_id INT REFERENCES categories(id) ON DELETE CASCADE
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+     price DECIMAL(10, 2) NOT NULL,
+    image_url TEXT NOT NULL,
+    original_price DECIMAL(10, 2),
+    category_id INT REFERENCES categories(id), -- Foreign key linking to categories
+    discount DECIMAL(5, 2), -- Percentage discount (e.g., 20 for 20%)
+    rating DECIMAL(3, 2), -- Average rating (e.g., 4.5)
+    review_count INT DEFAULT 0, -- Total number of reviews
+    stock INT DEFAULT 0, -- Product stock quantity
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       ''',
       '''
@@ -41,17 +47,18 @@ class DatabaseInitializer {
       ON CONFLICT DO NOTHING;
       ''',
       '''
-      INSERT INTO products (name, price, image_url, category_id)
+      INSERT INTO products (name, price, image_url, original_price,category_id, discount, rating, review_count,stock)
       VALUES
-      ('Apple', 1.50, 'https://plus.unsplash.com/premium_photo-1724249989963-9286e126af81?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YXBwbGV8ZW58MHx8MHx8fDA%3D', 1),
-      ('Laptop', 799.99, 'https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wfGVufDB8fDB8fHww', 2),
-      ('Headphones', 29.99, 'https://plus.unsplash.com/premium_photo-1679513691474-73102089c117?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D', 2),
-      ('Vitamin C', 12.99, 'https://media.istockphoto.com/id/993119894/photo/food-containing-vitamin-c-healthy-eating.webp?a=1&b=1&s=612x612&w=0&k=20&c=p0U_dGc-hFXXcRW4QggD5ySyPkivUBxlkPlyCI0byM4=', 3),
-      ('Shirt', 19.99, 'https://plus.unsplash.com/premium_photo-1678218594563-9fe0d16c6838?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c2hpcnR8ZW58MHx8MHx8fDA%3D', 4),
-      ('Jeans', 39.99, 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8amVhbnN8ZW58MHx8MHx8fDA%3D', 4)
+      ('Apple', 1.50, 'https://plus.unsplash.com/premium_photo-1724249989963-9286e126af81?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YXBwbGV8ZW58MHx8MHx8fDA%3D',12, 1,50,3,120,1),
+      ('Laptop', 799.99, 'https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wfGVufDB8fDB8fHww',13, 2,NULL,2,130,2),
+      ('Headphones', 29.99, 'https://plus.unsplash.com/premium_photo-1679513691474-73102089c117?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D',14, 2,30,4,110,1),
+      ('Vitamin C', 12.99, 'https://media.istockphoto.com/id/993119894/photo/food-containing-vitamin-c-healthy-eating.webp?a=1&b=1&s=612x612&w=0&k=20&c=p0U_dGc-hFXXcRW4QggD5ySyPkivUBxlkPlyCI0byM4=',15,3,10,4,90,3),
+      ('Shirt', 19.99, 'https://plus.unsplash.com/premium_photo-1678218594563-9fe0d16c6838?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c2hpcnR8ZW58MHx8MHx8fDA%3D', 16,4,20,5,100,4),
+      ('Jeans', 39.99, 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8amVhbnN8ZW58MHx8MHx8fDA%3D', 17,4,20,5,100,1)
       ON CONFLICT DO NOTHING;
       ''',
-      '''
+      '''   
+
       INSERT INTO promotions (title, image_url, description)
       VALUES
       ('10% Off on Groceries', 'https://plus.unsplash.com/premium_photo-1726869616627-60e146f01539?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8MTAlMjUlMjBPZmYlMjBvbiUyMEdyb2Nlcmllc3xlbnwwfHwwfHx8MA%3D%3D', 'Save 10% on all grocery items this week!'),

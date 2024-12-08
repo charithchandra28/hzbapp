@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hzbapp/utils/theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'blocs/guest/guest_bloc.dart';
-import 'blocs/guest/guest_event.dart';
+import 'blocs/guest/home_bloc.dart';
+import 'blocs/guest/home_event.dart';
 import 'data/database_initializer.dart';
-import 'data/repositories/guest_repository.dart';
+import 'data/repositories/supabase_repository.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
@@ -17,8 +17,8 @@ void main() async {
   );
 
   // Initialize the database
-  final databaseInitializer = DatabaseInitializer();
-  await databaseInitializer.initializeDatabase();
+  // final databaseInitializer = DatabaseInitializer();
+  // await databaseInitializer.initializeDatabase();
 
   runApp(MyApp());
 }
@@ -35,9 +35,13 @@ class MyApp extends StatelessWidget {
           theme: appTheme,
           darkTheme: darkTheme, // Dark theme
           themeMode: ThemeMode.system, // Automatically adapts to system setting
-          home: BlocProvider(
-            create: (context) => GuestBloc(GuestRepository())..add(LoadGuestData()),
-            child: HomeScreen(),
+          home: RepositoryProvider(
+            create: (context) => SupabaseRepository(),
+            child: BlocProvider(
+              create: (context) => HomeBloc(RepositoryProvider.of<SupabaseRepository>(context))
+                ..add(LoadHomeData()),
+              child: HomeScreen(),
+            ),
           ),
         );
       },
